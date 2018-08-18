@@ -12,7 +12,53 @@ class App extends Component {
         super()
 
         this.state = {
-            newTweet: "Rolindo Adventures of React"
+            newTweet: "Rolindo Adventures of React",
+            tweets: []
+        }
+
+        this.url = "http://twitelum-api.herokuapp.com/tweets"
+
+
+    }
+
+    componentDidMount(){
+
+            fetch(this.url)
+            .then(resposta => resposta.json())
+            .then(lista => {
+    
+                console.log(lista)
+                this.setState({
+                    tweets: lista
+                }) 
+                
+                console.log(this.state.tweets)
+    
+            } )
+
+    }
+
+    
+
+    mandaTweets = (e) => {
+        e.preventDefault()
+        //console.log(this)
+
+        const novoTweet = this.state.newTweet
+
+        if(novoTweet){
+            fetch(this.url, {
+                method: "POST",
+                body: JSON.stringify({
+                    login: 'artdiniz',
+                    conteudo: novoTweet
+                })
+            })
+            .then(resposta => resposta.json())
+            .then(novaResposta =>  this.setState({
+                tweets: [novaResposta, ...this.state.tweets]
+            }))
+            .catch(err => console.log(err)) 
         }
     }
 
@@ -25,7 +71,7 @@ class App extends Component {
         <div className="container">
             <Dashboard>
                 <Widget>
-                    <form className="novoTweet">
+                    <form className="novoTweet" onSubmit={this.mandaTweets}>
                         <div className="novoTweet__editorArea">
                             <span 
                                 className= { `novoTweet__status 
@@ -53,7 +99,14 @@ class App extends Component {
             <Dashboard posicao="centro">
                 <Widget>
                     <div className="tweetsArea">
-                        <Tweet />
+                        {
+                            this.state.tweets.map(tweet => <Tweet key={tweet + (Math.random() * 2)} 
+                            texto={tweet.conteudo} 
+                            nome={tweet.usuario.nome} 
+                            login={tweet.usuario.login}
+                            foto={tweet.usuario.foto}
+                            />)
+                        }
                     </div>
                 </Widget>
             </Dashboard>
