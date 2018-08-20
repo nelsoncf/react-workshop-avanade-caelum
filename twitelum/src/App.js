@@ -50,7 +50,7 @@ class App extends Component {
             fetch(this.url, {
                 method: "POST",
                 body: JSON.stringify({
-                    login: 'artdiniz',
+                    login: '',
                     conteudo: novoTweet
                 })
             })
@@ -98,6 +98,7 @@ class App extends Component {
             </Dashboard>
             <Dashboard posicao="centro">
                 <Widget>
+
                     <div className="tweetsArea">
                         {
                             this.state.tweets.map(tweet => <Tweet key={tweet + (Math.random() * 2)} 
